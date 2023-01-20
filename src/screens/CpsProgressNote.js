@@ -44,7 +44,7 @@ export default class CpsProgressNote extends React.Component {
           {key:'visit_outcome', hint:'', title: 'Visit Outcome', flag: 1, val: '', option: []},
           {key:'current_intervention', hint:'', title: 'Current Intervention', flag: 1, val: '', option: []},
           {key:'compliance_treatment', hint:'', title: 'Compliance to treatment', flag: 1, val: '', option: []},
-          {key:'medication_supervised_by_specify', hint:'', title: 'Medication supervised by', flag: 11,  val: '', option: [] , others:true , key2:'medication_other_specify' , val2:'' },
+          {key:'medication_supervised_by', hint:'', title: 'Medication supervised by', flag: 11,  val: '', option: [] , others:true , key2:'medication_supervised_by_specify' , val2:'' },
           {key:'wage_change_occur', hint:'', title: '', flag: 10, typ: 'radio', val: '', option:[{ id: 'yes', value: 'yes'},{ id: 'No', value: 'No' }], subQus:[
             {key:'change_in_rate', title: 'Change In Rate', flag: 1, val: '', option: [{ id: 'Yes', section_value: 'Per Hour'},{ id: 'Yes', section_value: 'Per Day'},{ id: 'Yes', section_value: 'Per Month'}]},
             {key:'from', hint:'', title: 'From', flag: 0, typ: 'text', val: ''},
@@ -86,7 +86,7 @@ export default class CpsProgressNote extends React.Component {
 
           {key:'others_specify', hint:'', title: 'Others,specify', flag: 4, typ: 'text',line:4, val: ''},
           // side_effects_remarks
-          {key:'', hint:'', title: 'Remarks', flag: 4, typ: 'text',line:4, val: ''},
+          {key:'side_effects_remarks', hint:'', title: 'Remarks', flag: 4, typ: 'text',line:4, val: ''},
           // social_performance
           {key:'', hint:'', title: null, flag: 5, head:'INTERVENTION'},
 
