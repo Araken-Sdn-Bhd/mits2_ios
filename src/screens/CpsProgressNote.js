@@ -188,13 +188,11 @@ export default class CpsProgressNote extends React.Component {
           }
       });
     });
-    SEND.status = 1;
+    SEND.status = 0;
     SEND.added_by = user.user.id;
-    // SEND.patient_mrn_id = SEND.added_by;
     console.log(flag,SEND);
 
     if (flag){
-      // submitCPSData(SEND);
       submitCPSData(SEND).then(r=>{
         console.log(r);
         if (r.status){
@@ -239,7 +237,6 @@ export default class CpsProgressNote extends React.Component {
               });
               AsyncStorage.setItem(dd[0],JSON.stringify(this.formInput[dd[1]].question[dd[2]].option));
               this.setState({});
-              // console.log(dd[1],dd[2],this.formInput[dd[1]].question[dd[2]].title, '++ ',this.formInput[dd[1]].question[dd[2]].option);
             } else {
               Http._toast(this.formInput[dd[1]].question[dd[2]].title + ' has not been loaded');
             }
@@ -291,8 +288,8 @@ export default class CpsProgressNote extends React.Component {
       if (state.isConnected){
         Http.GET('patient-registration/getPatientRegistrationListMobile').then(r=>{
           this.formInput[0].question[0].option = [];
-          // console.log(r);
           if (r.code == 200){
+            // console.log(r);
             this.formInput[0].question[0].option = r.list.filter(rr=>rr.branch_id == user.branch.branch_id);
             AsyncStorage.setItem('patient-registration/getPatientRegistrationListMobile',JSON.stringify(r.list));
             this.setState({});
@@ -312,22 +309,21 @@ export default class CpsProgressNote extends React.Component {
           }
         });
       }
-      // ['staff-management/getStaffManagementListOrById_?branch_id=0',1,4,'id','name'], //seen by,discussed with,case manager
       if (state.isConnected){
         const {submitCPSData,user} = this.context;
-        Http.GET('staff-management/getStaffManagementListOrById_?branch_id=0').then(r=>{
+        Http.GET('hospital/getServiceByTeamId?email=' + user.user.email).then(r=>{
+          console.log(r);
           this.formInput[0].question[4].option = [];
           this.formInput[0].question[7].option = [];
           this.formInput[0].question[13].option = [];
-          console.log('manishhhh',r);
           if (r.code == 200){
             // this.formInput[0].question[4].option  = r.list.map(e=>{return {id:e.id,section_value:e.name}; }).filter(rr=>rr.branch_id == user.branch.branch_id);
-            this.formInput[0].question[4].option = r.list.map(e=>{return {id:e.id,section_value:e.name,branch_id: e.branch_id}; }).filter(rr=>rr.branch_id == user.branch.branch_id);
-            this.formInput[0].question[7].option  = r.list.map(e=>{return {id:e.id,section_value:e.name,branch_id: e.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
+            this.formInput[0].question[4].option = r.stafflist.map(e=>{return {id:e.id,section_value:e.name,branch_id: user.branch.branch_id}; }).filter(rr=>rr.branch_id == user.branch.branch_id);
+            this.formInput[0].question[7].option  = r.rolelist.map(e=>{return {id:e.id,section_value:e.name,branch_id: e.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
             // this.formInput[0].question[7].option = r.list.filter(rr=>rr.branch_id == user.branch.branch_id);
-            this.formInput[0].question[13].option  = r.list.map(e=>{return {id:e.id,section_value:e.name,branch_id: e.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
+            this.formInput[0].question[13].option  = r.stafflist.map(e=>{return {id:e.id,section_value:e.name,branch_id: user.user.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
             // this.formInput[0].question[13].option = r.list.filter(rr=>rr.branch_id == user.branch.branch_id);
-            AsyncStorage.setItem('staff-management/getStaffManagementListOrById_?branch_id=0',JSON.stringify(r.list));
+            AsyncStorage.setItem('hospital/getServiceByTeamId?email=' + user.user.email,JSON.stringify(r.list));
             this.setState({});
           } else {
             Http._toast(' Patient data has not been loaded');
@@ -337,7 +333,7 @@ export default class CpsProgressNote extends React.Component {
           Http._toast(' Patient data has not been loaded');
         });
       } else {
-        AsyncStorage.getItem('staff-management/getStaffManagementListOrById_?branch_id=0').then(r=>{
+        AsyncStorage.getItem('hospital/getServiceByTeamId?email=' + user.user.email).then(r=>{
           console.log(r);
           if (r){
              this.formInput[0].question[4].option = JSON.parse(r).filter(rr=>rr.branch_id == user.branch.branch_id);

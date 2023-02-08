@@ -1438,7 +1438,7 @@ export default class WorkAnalysisForm extends React.Component {
         });
       }
     });
-    SEND.status = 1;
+    SEND.status = 0;
     SEND.added_by = user.user.id;
     SEND.patient_id = SEND.patient_id;
     console.log('Sending >> ', SEND);
