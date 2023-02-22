@@ -144,8 +144,8 @@ export default class WorkAnalysisForm extends React.Component {
             val: '',
             option: [
               {id: 'Per Hour', section_value: 'Per Hour'},
-                  {id: 'Per Day', section_value: 'Per Hour'},
-                  {id: 'Per Month', section_value: 'Per Hour'},
+              {id: 'Per Day', section_value: 'Per Day'},
+              {id: 'Per Month', section_value: 'Per Month'},
             ],
           },
           {

@@ -106,6 +106,7 @@ export default class SetProgress extends React.Component {
 
     SEND.added_by = user.user.id;
     SEND.patient_mrn_id = SEND["patient_id"];
+    SEND.status = 0;
     console.log("Alldata >>",SEND);
 
     if (flag){

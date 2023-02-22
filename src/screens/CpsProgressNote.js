@@ -312,16 +312,16 @@ export default class CpsProgressNote extends React.Component {
       if (state.isConnected){
         const {submitCPSData,user} = this.context;
         Http.GET('hospital/getServiceByTeamId?email=' + user.user.email).then(r=>{
-          console.log(r);
+          console.log('data received =' + JSON.stringify(r));
           this.formInput[0].question[4].option = [];
           this.formInput[0].question[7].option = [];
           this.formInput[0].question[13].option = [];
           if (r.code == 200){
             // this.formInput[0].question[4].option  = r.list.map(e=>{return {id:e.id,section_value:e.name}; }).filter(rr=>rr.branch_id == user.branch.branch_id);
             this.formInput[0].question[4].option = r.stafflist.map(e=>{return {id:e.id,section_value:e.name,branch_id: user.branch.branch_id}; }).filter(rr=>rr.branch_id == user.branch.branch_id);
-            this.formInput[0].question[7].option  = r.rolelist.map(e=>{return {id:e.id,section_value:e.name,branch_id: e.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
+            this.formInput[0].question[7].option  = r.rolelist.map(e=>{return {id:e.id,section_value:e.name,branch_id: user.branch.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
             // this.formInput[0].question[7].option = r.list.filter(rr=>rr.branch_id == user.branch.branch_id);
-            this.formInput[0].question[13].option  = r.stafflist.map(e=>{return {id:e.id,section_value:e.name,branch_id: user.user.branch_id};}).filter(rr=>rr.branch_id == user.branch.branch_id);
+            this.formInput[0].question[13].option  = r.stafflist.map(e=>{return {id:e.id,section_value:e.name,branch_id: user.branch.branch_id}; }).filter(rr=>rr.branch_id == user.branch.branch_id);
             // this.formInput[0].question[13].option = r.list.filter(rr=>rr.branch_id == user.branch.branch_id);
             AsyncStorage.setItem('hospital/getServiceByTeamId?email=' + user.user.email,JSON.stringify(r.list));
             this.setState({});
