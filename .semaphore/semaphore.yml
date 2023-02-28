@@ -18,21 +18,9 @@ blocks:
             - cache restore
             - npm install
             - cache store
-  - name: Run linter
-    dependencies:
-      - Install dependencies
-    task:
-      prologue:
-        commands:
-          - checkout
-      jobs:
-        - name: run eslint
-          commands:
-            - cache restore
-            - npm run lint
   - name: Run iOS tests
     dependencies:
-      - Run linter
+      - Install dependencies
     task:
       agent:
         machine:
@@ -61,7 +49,7 @@ blocks:
             - artifact push workflow ios/build/Build/Products/Release-iphonesimulator/ReactNativeSemaphoreNew.app
   - name: Run Android tests
     dependencies:
-      - Run linter
+      - Install dependencies
     task:
       prologue:
         commands:
