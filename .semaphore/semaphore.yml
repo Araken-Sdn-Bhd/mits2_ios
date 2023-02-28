@@ -1,5 +1,5 @@
 version: v1.0
-name: Semaphore React Native iOS Example Pipeline
+name: React Native CI pipeline
 agent:
   machine:
     type: e1-standard-2
