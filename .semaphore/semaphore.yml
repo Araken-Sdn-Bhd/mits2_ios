@@ -1,39 +1,95 @@
 version: v1.0
-name: Semaphore iOS Swift example with Fastlane
+name: Semaphore React Native iOS Example Pipeline
 agent:
   machine:
-    type: a1-standard-4
-    os_image: macos-xcode13
+    type: e1-standard-2
+    os_image: ubuntu2004
+  containers:
+    - name: main
+      image: 'registry.semaphoreci.com/android:29-node'
 blocks:
-  - name: Fastlane Tests
+  - name: Install dependencies
+    dependencies: []
     task:
-      env_vars:
-        - name: LANG
-          value: en_US.UTF-8
+      jobs:
+        - name: npm install and cache
+          commands:
+            - checkout
+            - cache restore
+            - npm install
+            - cache store
+  - name: Run linter
+    dependencies:
+      - Install dependencies
+    task:
       prologue:
         commands:
           - checkout
-          - cache restore
-          - bundle install --path vendor/bundle
-          - cache store
       jobs:
-        - name: bundle exec fastlane test
+        - name: run eslint
           commands:
-            - bundle exec xcversion select 13.0.0
-            - bundle exec fastlane test
-  - name: Fastlane Build
+            - cache restore
+            - npm run lint
+  - name: Run iOS tests
+    dependencies:
+      - Run linter
     task:
-      env_vars:
-        - name: LANG
-          value: en_US.UTF-8
+      agent:
+        machine:
+          type: a1-standard-4
+          os_image: macos-xcode12
       prologue:
         commands:
           - checkout
-          - cache restore
-          - bundle install --path vendor/bundle
-          - cache store
       jobs:
-        - name: bundle exec fastlane build
+        - name: unit and integration tests
           commands:
-            - bundle exec xcversion select 13.0.0
-            - bundle exec fastlane build
+            - cache restore
+            - npm test
+        - name: e2e tests
+          commands:
+            - brew tap wix/brew
+            - brew install applesimutils
+            - cache restore
+            - nvm install 14
+            - cd ios
+            - pod install
+            - cd ..
+            - npm run detox-clean-and-build-cache
+            - npm run detox-ios-build-release
+            - npm run detox-ios-test-release
+            - artifact push workflow ios/build/Build/Products/Release-iphonesimulator/ReactNativeSemaphoreNew.app
+  - name: Run Android tests
+    dependencies:
+      - Run linter
+    task:
+      prologue:
+        commands:
+          - checkout
+          - sdkmanager "platform-tools" "platforms;android-24" "emulator"
+          - sdkmanager "system-images;android-24;default;x86"
+          - echo no | avdmanager create avd -n Nexus_S_API_24 -k "system-images;android-24;default;x86" --device "Nexus S"
+      jobs:
+        - name: unit and integration tests
+          commands:
+            - cache restore
+            - npm test
+        - name: e2e tests
+          commands:
+            - cache restore
+            - npm run detox-clean-and-build-cache
+            - npm run detox-android-build-release
+            - npm run detox-android-test-release
+            - artifact push workflow android/app/build/outputs/apk/release/app-release.apk
+after_pipeline:
+  task:
+    jobs:
+      - name: 'Job #1'
+        commands: []
+promotions:
+  - name: Build app
+    pipeline_file: release-build.yml
+    auto_promote_on:
+      - result: passed
+        branch:
+          - master
